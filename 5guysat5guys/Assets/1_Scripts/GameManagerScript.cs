@@ -25,23 +25,30 @@ public class GameManagerScript : MonoBehaviour
 
     void SwitchGuy()
     {
-        int switchedGuys = 0;
+        int switches = 0;
+        GuysController[] switchedGuys = new GuysController[guys.Length];
 
-        while (switchedGuys <= guys.Length)
+        while (switches <= guys.Length)
         {
             if (activeGuy + 1 == guys.Length)
             {
                 if (!guys[0].hasPlayed)
                 {
                     guys[0].GuyActivation(true);
-                    guys[activeGuy].GuyActivation(false);
+
+                    foreach (var switchedGuy in switchedGuys)
+                    {
+                        switchedGuy.GuyActivation(false);
+                    }
+                    
                     activeGuy = 0;
                     return;
                 }
                 else
                 {
+                    switchedGuys[switches] = guys[activeGuy];                   
                     activeGuy = 0;
-                    switchedGuys += 1;
+                    switches += 1;
                 }
             }
             else
@@ -49,14 +56,20 @@ public class GameManagerScript : MonoBehaviour
                 if (!guys[activeGuy + 1].hasPlayed)
                 {
                     guys[activeGuy + 1].GuyActivation(true);
-                    guys[activeGuy].GuyActivation(false);
+
+                    foreach (var switchedGuy in switchedGuys)
+                    {
+                        switchedGuy.GuyActivation(false);
+                    }
+
                     activeGuy += 1;
                     return;
                 }
                 else
                 {
+                    switchedGuys[switches] = guys[activeGuy];
                     activeGuy += 1;
-                    switchedGuys += 1;
+                    switches += 1;
                 }
             }
         }
