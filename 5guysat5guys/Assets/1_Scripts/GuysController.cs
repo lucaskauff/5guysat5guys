@@ -12,9 +12,13 @@ public class GuysController : MonoBehaviour
     public float moveSpeed = 1;
 
     [Header("Serializable variables")]
+    [SerializeField] Vector2 startingPos = new Vector2(0, 0);
 
     [Header("Objects to serialize")]
-    [SerializeField] Text dirFb = default; //will be replaced by an image
+    [SerializeField] GameObject myVCam = default;
+    [SerializeField] GameObject myCanvas = default;
+    [SerializeField] Image dirFb = default;
+    [SerializeField] Sprite[] difDir = default;
 
     [Header("My components")]
     [SerializeField] Rigidbody2D myRb = default;
@@ -31,21 +35,23 @@ public class GuysController : MonoBehaviour
 
     private void Start()
     {
+        transform.position = startingPos;
 
+        dirVector = new Vector2(Mathf.Cos(0), Mathf.Sin(0));
+        targetVector = new Vector2(transform.position.x + dirVector.x * stepRange, transform.position.y + dirVector.y * stepRange);
     }
 
     private void Update()
     {
         if (canMove)
         {
+            DirectionFeedback();
+
             if (canChangeDirection)
             {
-                StopCoroutine(WaitBeforeChangingDirection());
                 StartCoroutine(WaitBeforeChangingDirection());
                 canChangeDirection = false;
             }
-
-            DirectionFeedback();
 
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
@@ -69,13 +75,38 @@ public class GuysController : MonoBehaviour
 
         if ((Vector2)transform.position == targetVector)
         {
+            canChangeDirection = true;
             isOnMoving = false;
         }
     }
 
     private void DirectionFeedback()
     {
-        dirFb.text = direction.ToString();
+        dirFb.sprite = difDir[direction];
+    }
+
+    public void GuyActivation(bool upordown)
+    {
+        canMove = upordown;
+        myCanvas.SetActive(upordown);
+        myVCam.SetActive(upordown);
+
+        if (upordown)
+        {            
+            canChangeDirection = true;
+        }
+    }
+
+    public void ReactivateGuy()
+    {
+        canMove = true;
+        myCanvas.SetActive(true);
+    }
+
+    public void ShutdownGuy()
+    {
+        canMove = false;
+        myCanvas.SetActive(false);
     }
 
     IEnumerator WaitBeforeChangingDirection()
@@ -95,5 +126,6 @@ public class GuysController : MonoBehaviour
         targetVector = new Vector2(transform.position.x + dirVector.x * stepRange, transform.position.y + dirVector.y * stepRange);
 
         canChangeDirection = true;
+        StopCoroutine(WaitBeforeChangingDirection());
     }
 }
