@@ -49,6 +49,7 @@ public class GuysController : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
+                StopAllCoroutines();
                 canMove = false;
                 isOnMoving = true;
             }
