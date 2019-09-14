@@ -12,7 +12,7 @@ public class GameManagerScript : MonoBehaviour
 
     private void Start()
     {
-        guys[activeGuy].ReactivateGuy();
+        guys[activeGuy].GuyActivation(true);
     }
 
     private void Update()
@@ -25,17 +25,50 @@ public class GameManagerScript : MonoBehaviour
 
     void SwitchGuy()
     {
-        if (activeGuy + 1 == guys.Length)
+        int switchedGuys = 0;
+
+        while (switchedGuys <= guys.Length)
         {
-            guys[0].GuyActivation(true);
-            guys[activeGuy].GuyActivation(false);
-            activeGuy = 0;
+            if (activeGuy + 1 == guys.Length)
+            {
+                if (!guys[0].hasPlayed)
+                {
+                    guys[0].GuyActivation(true);
+                    guys[activeGuy].GuyActivation(false);
+                    activeGuy = 0;
+                    return;
+                }
+                else
+                {
+                    activeGuy = 0;
+                    switchedGuys += 1;
+                }
+            }
+            else
+            {
+                if (!guys[activeGuy + 1].hasPlayed)
+                {
+                    guys[activeGuy + 1].GuyActivation(true);
+                    guys[activeGuy].GuyActivation(false);
+                    activeGuy += 1;
+                    return;
+                }
+                else
+                {
+                    activeGuy += 1;
+                    switchedGuys += 1;
+                }
+            }
         }
-        else
+
+        ResetGuys();
+    }
+
+    void ResetGuys()
+    {
+        foreach (var guy in guys)
         {
-            guys[activeGuy + 1].GuyActivation(true);
-            guys[activeGuy].GuyActivation(false);
-            activeGuy += 1;
+            guy.hasPlayed = false;
         }
     }
 }

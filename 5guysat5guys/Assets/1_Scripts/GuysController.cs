@@ -25,26 +25,29 @@ public class GuysController : MonoBehaviour
 
     //Hidden public
     [HideInInspector] public bool canMove = false;
+    [HideInInspector] public bool hasPlayed = false;
 
     //Private
     bool canChangeDirection = true;
     int direction = 0;
     bool isOnMoving = false;
     Vector2 dirVector = new Vector2(0, 0);
-    Vector2 targetVector = new Vector2(0, 0);
+    Vector2 targetPos = new Vector2(0, 0);
+    bool smthgInDir = false;
 
     private void Start()
     {
         transform.position = startingPos;
 
         dirVector = new Vector2(Mathf.Cos(0), Mathf.Sin(0));
-        targetVector = new Vector2(transform.position.x + dirVector.x * stepRange, transform.position.y + dirVector.y * stepRange);
+        targetPos = new Vector2(transform.position.x + dirVector.x * stepRange, transform.position.y + dirVector.y * stepRange);
     }
 
     private void Update()
     {
         if (canMove)
         {
+            ColDetection();
             DirectionFeedback();
 
             if (canChangeDirection)
@@ -55,9 +58,17 @@ public class GuysController : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
-                StopAllCoroutines();
-                canMove = false;
-                isOnMoving = true;
+                if (smthgInDir)
+                {
+                    //add NOPE sound
+                }
+                else
+                {
+                    StopAllCoroutines();
+                    canMove = false;
+                    isOnMoving = true;
+                    hasPlayed = true;
+                }
             }
         }
         else
@@ -71,18 +82,39 @@ public class GuysController : MonoBehaviour
 
     private void FaisleMouv()
     {
-        transform.position = Vector2.MoveTowards(transform.position, targetVector, moveSpeed * Time.deltaTime);
+        transform.position = Vector2.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
 
-        if ((Vector2)transform.position == targetVector)
+        if ((Vector2)transform.position == targetPos)
         {
             canChangeDirection = true;
             isOnMoving = false;
         }
     }
 
+    private void ColDetection()
+    {
+        RaycastHit2D detection = Physics2D.Raycast((Vector2)transform.position + dirVector * 0.5f, dirVector, stepRange);
+
+        if (detection.collider)
+        {
+            smthgInDir = true;
+        }
+        else
+        {
+            smthgInDir = false;
+        }
+    }
+
     private void DirectionFeedback()
     {
-        dirFb.sprite = difDir[direction];
+        if (smthgInDir)
+        {
+            dirFb.sprite = difDir[4];
+        }
+        else
+        {
+            dirFb.sprite = difDir[direction];
+        }
     }
 
     public void GuyActivation(bool upordown)
@@ -94,19 +126,8 @@ public class GuysController : MonoBehaviour
         if (upordown)
         {            
             canChangeDirection = true;
+            targetPos = new Vector2(transform.position.x + dirVector.x * stepRange, transform.position.y + dirVector.y * stepRange);
         }
-    }
-
-    public void ReactivateGuy()
-    {
-        canMove = true;
-        myCanvas.SetActive(true);
-    }
-
-    public void ShutdownGuy()
-    {
-        canMove = false;
-        myCanvas.SetActive(false);
     }
 
     IEnumerator WaitBeforeChangingDirection()
@@ -123,7 +144,7 @@ public class GuysController : MonoBehaviour
         }
 
         dirVector = new Vector2(Mathf.Cos(Mathf.Deg2Rad * (360 / nbOfDir * direction)), Mathf.Sin(Mathf.Deg2Rad * (360 / nbOfDir * direction)));
-        targetVector = new Vector2(transform.position.x + dirVector.x * stepRange, transform.position.y + dirVector.y * stepRange);
+        targetPos = new Vector2(transform.position.x + dirVector.x * stepRange, transform.position.y + dirVector.y * stepRange);
 
         canChangeDirection = true;
         StopCoroutine(WaitBeforeChangingDirection());
