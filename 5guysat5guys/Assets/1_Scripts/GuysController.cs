@@ -13,6 +13,7 @@ public class GuysController : MonoBehaviour
 
     [Header("Serializable variables")]
     [SerializeField] Vector2 startingPos = new Vector2(0, 0);
+    [SerializeField] Color hasPlayedClr = default;
 
     [Header("Objects to serialize")]
     [SerializeField] GameObject myVCam = default;
@@ -68,6 +69,7 @@ public class GuysController : MonoBehaviour
                     canMove = false;
                     isOnMoving = true;
                     hasPlayed = true;
+                    myRend.color = hasPlayedClr;
                 }
             }
         }
@@ -124,9 +126,10 @@ public class GuysController : MonoBehaviour
         myVCam.SetActive(upordown);
 
         if (upordown)
-        {            
+        {
             canChangeDirection = true;
             targetPos = new Vector2(transform.position.x + dirVector.x * stepRange, transform.position.y + dirVector.y * stepRange);
+            myRend.color = Color.white;
         }
     }
 

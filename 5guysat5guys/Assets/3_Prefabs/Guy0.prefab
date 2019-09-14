@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4901683631620134906}
   m_Layer: 0
   m_Name: Guy0
-  m_TagString: Untagged
+  m_TagString: Guy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -51,6 +51,7 @@ MonoBehaviour:
   stepRange: 1
   moveSpeed: 1
   startingPos: {x: 0, y: 0}
+  hasPlayedClr: {r: 0.4811321, g: 0.4811321, b: 0.4811321, a: 1}
   myVCam: {fileID: 0}
   myCanvas: {fileID: 1134927249484633859}
   dirFb: {fileID: 1068267346925358421}
@@ -60,8 +61,9 @@ MonoBehaviour:
   - {fileID: 214605620320406917, guid: d110b6554da67d4448f3abd24589ee35, type: 3}
   - {fileID: -625784477307401811, guid: d110b6554da67d4448f3abd24589ee35, type: 3}
   - {fileID: -7899826101894094015, guid: d110b6554da67d4448f3abd24589ee35, type: 3}
-  myRb: {fileID: 0}
+  myRend: {fileID: 1134927249325741837}
   canMove: 0
+  hasPlayed: 0
 --- !u!212 &1134927249325741837
 SpriteRenderer:
   m_ObjectHideFlags: 0
