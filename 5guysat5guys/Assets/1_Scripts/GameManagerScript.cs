@@ -28,17 +28,18 @@ public class GameManagerScript : MonoBehaviour
         int switches = 0;
         GuysController[] switchedGuys = new GuysController[guys.Length];
 
-        while (switches <= guys.Length)
+        while (switches < guys.Length)
         {
             if (activeGuy + 1 == guys.Length)
             {
                 if (!guys[0].hasPlayed)
                 {
                     guys[0].GuyActivation(true);
+                    guys[activeGuy].GuyActivation(false);
 
                     foreach (var switchedGuy in switchedGuys)
                     {
-                        switchedGuy.GuyActivation(false);
+                        if (switchedGuy) switchedGuy.GuyActivation(false);
                     }
                     
                     activeGuy = 0;
@@ -56,10 +57,11 @@ public class GameManagerScript : MonoBehaviour
                 if (!guys[activeGuy + 1].hasPlayed)
                 {
                     guys[activeGuy + 1].GuyActivation(true);
+                    guys[activeGuy].GuyActivation(false);
 
                     foreach (var switchedGuy in switchedGuys)
                     {
-                        switchedGuy.GuyActivation(false);
+                        if (switchedGuy) switchedGuy.GuyActivation(false);
                     }
 
                     activeGuy += 1;

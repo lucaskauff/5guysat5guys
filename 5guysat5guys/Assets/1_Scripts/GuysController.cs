@@ -21,7 +21,7 @@ public class GuysController : MonoBehaviour
     [SerializeField] Sprite[] difDir = default;
 
     [Header("My components")]
-    [SerializeField] Rigidbody2D myRb = default;
+    [SerializeField] SpriteRenderer myRend = default;
 
     //Hidden public
     [HideInInspector] public bool canMove = false;
