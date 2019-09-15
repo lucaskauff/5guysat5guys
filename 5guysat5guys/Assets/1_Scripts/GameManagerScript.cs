@@ -24,11 +24,6 @@ public class GameManagerScript : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse1))
-        {
-            SwitchGuy();
-        }
-
         checkNbGuysLeftToPlay = 0;
 
         foreach (var guy in guys)
@@ -44,16 +39,21 @@ public class GameManagerScript : MonoBehaviour
             }
         }
 
+        if (Input.GetKeyDown(KeyCode.Mouse1) && !lastGuySwitched)
+        {
+            SwitchGuy();
+        }
+
         if (checkNbGuysLeftToPlay == 0)
         {
             ResetGuys();
         }
-
+        
         if (checknNbGuysDead == guys.Length)
         {
             GameOver();
         }
-
+        
         //Debug
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -65,10 +65,8 @@ public class GameManagerScript : MonoBehaviour
     {
         int switches = 0;
         GuysController[] switchedGuys = new GuysController[guys.Length];
-
-        /*
+        
         checkNbGuysLeftToPlay = 0;
-
         foreach (var guy in guys)
         {
             if (!guy.hasPlayed)
@@ -76,8 +74,7 @@ public class GameManagerScript : MonoBehaviour
                 checkNbGuysLeftToPlay += 1;
             }
         }
-        */
-
+        
         if (checkNbGuysLeftToPlay > 1)
         {
             while (switches < guys.Length)
@@ -128,7 +125,7 @@ public class GameManagerScript : MonoBehaviour
                 }
             }
         }
-        else if (checkNbGuysLeftToPlay == 1 && !lastGuySwitched)
+        else if (checkNbGuysLeftToPlay == 1)
         {
             if (activeGuy + 1 == guys.Length)
             {
@@ -145,12 +142,6 @@ public class GameManagerScript : MonoBehaviour
 
             lastGuySwitched = true;
         }
-        /*
-        else if (checkNbGuysLeftToPlay == 0)
-        {
-            ResetGuys();
-        }
-        */
     }
 
     void ResetGuys()

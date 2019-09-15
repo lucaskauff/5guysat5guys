@@ -96,7 +96,7 @@ public class GuysController : MonoBehaviour
 
     private void ColDetection()
     {
-        RaycastHit2D detection = Physics2D.Raycast((Vector2)transform.position + dirVector * 0.5f, dirVector, stepRange / 2);
+        RaycastHit2D detection = Physics2D.Raycast((Vector2)transform.position + dirVector * 0.6f, dirVector, stepRange / 2);
         Debug.DrawRay(transform.position, dirVector);
 
         if (detection.collider)
@@ -132,6 +132,12 @@ public class GuysController : MonoBehaviour
             canChangeDirection = true;
             targetPos = new Vector2(transform.position.x + dirVector.x * stepRange, transform.position.y + dirVector.y * stepRange);
         }
+    }
+
+    public void GuyIsDead()
+    {
+        isAlive = false;
+        myRend.color = Color.clear;
     }
 
     IEnumerator WaitBeforeChangingDirection()
