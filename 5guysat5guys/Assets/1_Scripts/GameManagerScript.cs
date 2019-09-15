@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManagerScript : MonoBehaviour
 {
@@ -9,10 +10,16 @@ public class GameManagerScript : MonoBehaviour
 
     //Private
     int activeGuy = 0;
+    int checkNbGuysLeftToPlay = 0;
+    int checknNbGuysDead = 0;
+    bool lastGuySwitched = false;
+
+    Container theContainer;
 
     private void Start()
     {
-        guys[activeGuy].GuyActivation(true);
+        theContainer = FindObjectOfType<Container>();
+        guys[activeGuy].GuyActivation(true); 
     }
 
     private void Update()
@@ -21,6 +28,12 @@ public class GameManagerScript : MonoBehaviour
         {
             SwitchGuy();
         }
+
+        //Debug
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            GameOver();
+        }
     }
 
     void SwitchGuy()
@@ -28,55 +41,87 @@ public class GameManagerScript : MonoBehaviour
         int switches = 0;
         GuysController[] switchedGuys = new GuysController[guys.Length];
 
-        while (switches < guys.Length)
+        checkNbGuysLeftToPlay = 0;
+
+        foreach (var guy in guys)
         {
-            if (activeGuy + 1 == guys.Length)
+            if (!guy.hasPlayed)
             {
-                if (!guys[0].hasPlayed)
-                {
-                    guys[0].GuyActivation(true);
-                    guys[activeGuy].GuyActivation(false);
-
-                    foreach (var switchedGuy in switchedGuys)
-                    {
-                        if (switchedGuy) switchedGuy.GuyActivation(false);
-                    }
-                    
-                    activeGuy = 0;
-                    return;
-                }
-                else
-                {
-                    switchedGuys[switches] = guys[activeGuy];                   
-                    activeGuy = 0;
-                    switches += 1;
-                }
-            }
-            else
-            {
-                if (!guys[activeGuy + 1].hasPlayed)
-                {
-                    guys[activeGuy + 1].GuyActivation(true);
-                    guys[activeGuy].GuyActivation(false);
-
-                    foreach (var switchedGuy in switchedGuys)
-                    {
-                        if (switchedGuy) switchedGuy.GuyActivation(false);
-                    }
-
-                    activeGuy += 1;
-                    return;
-                }
-                else
-                {
-                    switchedGuys[switches] = guys[activeGuy];
-                    activeGuy += 1;
-                    switches += 1;
-                }
+                checkNbGuysLeftToPlay += 1;
             }
         }
 
-        ResetGuys();
+        if (checkNbGuysLeftToPlay > 1)
+        {
+            while (switches < guys.Length)
+            {
+                if (activeGuy + 1 == guys.Length)
+                {
+                    if (!guys[0].hasPlayed)
+                    {
+                        guys[0].GuyActivation(true);
+                        guys[activeGuy].GuyActivation(false);
+
+                        foreach (var switchedGuy in switchedGuys)
+                        {
+                            if (switchedGuy) switchedGuy.GuyActivation(false);
+                        }
+
+                        activeGuy = 0;
+                        return;
+                    }
+                    else
+                    {
+                        switchedGuys[switches] = guys[activeGuy];
+                        activeGuy = 0;
+                        switches += 1;
+                    }
+                }
+                else
+                {
+                    if (!guys[activeGuy + 1].hasPlayed)
+                    {
+                        guys[activeGuy + 1].GuyActivation(true);
+                        guys[activeGuy].GuyActivation(false);
+
+                        foreach (var switchedGuy in switchedGuys)
+                        {
+                            if (switchedGuy) switchedGuy.GuyActivation(false);
+                        }
+
+                        activeGuy += 1;
+                        return;
+                    }
+                    else
+                    {
+                        switchedGuys[switches] = guys[activeGuy];
+                        activeGuy += 1;
+                        switches += 1;
+                    }
+                }
+            }
+        }
+        else if (checkNbGuysLeftToPlay == 1 && !lastGuySwitched)
+        {
+            if (activeGuy + 1 == guys.Length)
+            {
+                guys[0].GuyActivation(true);
+                guys[activeGuy].GuyActivation(false);
+                activeGuy = 0;
+            }
+            else
+            {
+                guys[activeGuy + 1].GuyActivation(true);
+                guys[activeGuy].GuyActivation(false);
+                activeGuy += 1;
+            }
+
+            lastGuySwitched = true;
+        }
+        else if (checkNbGuysLeftToPlay == 0)
+        {
+            ResetGuys();
+        }
     }
 
     void ResetGuys()
@@ -84,6 +129,15 @@ public class GameManagerScript : MonoBehaviour
         foreach (var guy in guys)
         {
             guy.hasPlayed = false;
+            guy.GetComponent<SpriteRenderer>().color = Color.white;
         }
+
+        lastGuySwitched = false;
+    }
+
+    void GameOver()
+    {
+        theContainer.valueToStore = guys.Length - checknNbGuysDead;
+        SceneManager.LoadScene("WinMenu");
     }
 }

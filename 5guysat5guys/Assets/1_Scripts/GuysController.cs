@@ -129,7 +129,7 @@ public class GuysController : MonoBehaviour
         {
             canChangeDirection = true;
             targetPos = new Vector2(transform.position.x + dirVector.x * stepRange, transform.position.y + dirVector.y * stepRange);
-            myRend.color = Color.white;
+            //myRend.color = Color.white;
         }
     }
 
