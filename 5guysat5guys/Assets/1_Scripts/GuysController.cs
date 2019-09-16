@@ -28,6 +28,7 @@ public class GuysController : MonoBehaviour
     [HideInInspector] public bool canMove = false;
     [HideInInspector] public bool hasPlayed = false;
     [HideInInspector] public bool isAlive = true;
+    [HideInInspector] public bool isOut = false;
 
     //Private
     bool canChangeDirection = true;
@@ -136,8 +137,14 @@ public class GuysController : MonoBehaviour
 
     public void GuyIsDead()
     {
-        isAlive = false;
         myRend.color = Color.clear;
+        isAlive = false;
+    }
+
+    public void GetsOut()
+    {
+        myRend.color = Color.clear;
+        isOut = true;
     }
 
     IEnumerator WaitBeforeChangingDirection()
